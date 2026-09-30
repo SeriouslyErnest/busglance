@@ -1,0 +1,3 @@
+- [ ] Add up to five URL-backed panels with legacy bookmark compatibility.
+- [ ] Add validated custom stop labels and editable add/remove panel flow.
+- [ ] Compact the page title and stop panels; update help and verify flows.

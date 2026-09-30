@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Store panel configuration in ordered `p1`–`p5` URL parameters with optional encoded labels, while reading legacy `a`/`b` parameters, because bookmarks must remain portable and old links must keep working.
