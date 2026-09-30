@@ -3,7 +3,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { fetchArrivals, STOP_ID_RE } from "@/lib/bus";
-import { getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
+import { cleanTitle, getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
 import { ACCENT_KEYS, ACCENT_SWATCH, type AccentKey } from "@/components/BusPanel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
