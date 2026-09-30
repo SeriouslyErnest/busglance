@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { fetchArrivals, minutesUntil, type BusService } from "@/lib/bus";
+import { fetchArrivals, minutesUntil, msUntilNextTick, type BusService } from "@/lib/bus";
 import { cn } from "@/lib/utils";
 
 function useNow() {
@@ -120,7 +120,7 @@ export function BusPanel({
   const { data, isLoading, isError, dataUpdatedAt } = useQuery({
     queryKey: ["arrivals", stopId],
     queryFn: () => fetchArrivals(stopId),
-    refetchInterval: 15000,
+    refetchInterval: () => msUntilNextTick(),
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: true,
     staleTime: 10000,
