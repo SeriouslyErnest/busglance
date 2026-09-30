@@ -140,6 +140,12 @@
   animation: flash-urgent 0.7s ease-in-out infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .animate-flash-warn, .animate-flash-urgent { animation: none; }
+  .animate-flash-warn { background-color: var(--warn); color: var(--warn-foreground); }
+  .animate-flash-urgent { background-color: var(--urgent); color: var(--urgent-foreground); }
+}
+
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);

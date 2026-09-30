@@ -13,10 +13,10 @@ The hosted app is already live. You don't have to fork or run anything to use it
 ### Set up your own stops and bookmarks
 
 1. Open the link above, then tap **Change stops & buses** at the bottom of the page.
-2. Pick the **left** or **right** panel and enter the **5-digit bus stop code**
+2. Add a panel (up to five) and enter the **5-digit bus stop code**
    printed on your bus stop sign (for example `14141`).
 3. Tap **Show buses** — the services that serve that stop load automatically.
-   Tick the ones you take, and pick a panel colour.
+   Tick the ones you take, pick a panel colour, and optionally give the stop a name (up to 30 characters).
 4. (Optional) Type a **Page title** — this becomes the name your browser uses
    when you bookmark the page.
 5. Tap **Update**. You're back on the main page with your chosen stops.
@@ -27,12 +27,13 @@ The hosted app is already live. You don't have to fork or run anything to use it
 The URL carries everything, for example:
 
 ```
-https://e-bus-flash-20290915.lovable.app/?a=14141:100:cyan&title=Buses%20from%20home
+https://e-bus-flash-20290915.lovable.app/?p1=14141:100:cyan:Home&title=Buses%20from%20home
 ```
 
-Format: `?a=<stopId>:<bus1>,<bus2>:<colour>&b=<stopId>:<buses>:<colour>&title=<text>`
+Format: `?p1=<stopId>:<bus1>,<bus2>:<colour>:<encoded-name>&p2=...&title=<text>`
 
-- `a` and `b` are the left and right panels. Either can be omitted.
+- `p1` through `p5` are the ordered panels. Older `a` and `b` bookmarks still work.
+- The optional stop name is URL-encoded and limited to 30 characters; without it, the heading shows the bus numbers.
 - `<colour>` is one of `cyan`, `amber`, `green`, `rose`.
 - `title` is optional. When blank, the title space is hidden.
 
@@ -59,8 +60,7 @@ locally, or understand how it's built.
 
 ### Project intent
 
-A small, fast, dependency-light web app that shows live bus arrivals for one or
-two user-chosen Singapore bus stops, optimised for phone screens. Everything the
+A small, fast, dependency-light web app that shows live bus arrivals for up to five user-chosen Singapore bus stops, optimised for phone screens. Everything the
 user configures is encoded in the URL — there is no database, no account, and no
 server-side state. The app is therefore trivially shareable: a URL is a complete,
 working configuration.
@@ -69,7 +69,7 @@ working configuration.
 
 - **Frontend only.** The app fetches `https://arrivelah2.busrouter.sg/` directly
   from the browser. There is no backend or authentication.
-- **URL-driven panels.** Search params (`a`, `b`, `title`) are validated with
+- **URL-driven panels.** Search params (`p1`–`p5`, `title`; legacy `a`/`b` supported) are validated with
   Zod via `@tanstack/zod-adapter`. Stop IDs must be 5 digits; service numbers are
   1–5 alphanumeric characters; colours are limited to a high-visibility set.
   See `src/lib/panel.ts` for the parser and serializer.
@@ -128,8 +128,7 @@ calls it read-only from the browser; no API key is required.
 
 ### Limitations
 
-- Only one or two panels (left/right) per bookmark. Use separate bookmarks for
-  more combinations.
+- Up to five panels per bookmark. Use separate bookmarks for more combinations.
 - Colours are intentionally limited to four high-visibility options to keep the
   flashing alerts readable at a glance.
 - The app depends on the upstream ArriveLah service; if it is down, the app shows
