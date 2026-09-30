@@ -50,7 +50,7 @@ function ConfigPage() {
   });
   const [nextId, setNextId] = useState(5);
   const [limitWarning, setLimitWarning] = useState(false);
-  const [pageTitle, setPageTitle] = useState(search.title.trim().slice(0, 80));
+  const [pageTitle, setPageTitle] = useState(cleanTitle(search.title));
   const [emptyWarning, setEmptyWarning] = useState(false);
 
   function change(id: number, changes: Partial<Draft>) {
@@ -91,7 +91,7 @@ function ConfigPage() {
       return;
     }
     navigate({ to: "/", search: panelsToSearch(configured.map((draft) =>
-      serializePanel(draft.stopId, draft.selected, draft.accent, draft.label)), pageTitle.trim()) });
+      serializePanel(draft.stopId, draft.selected, draft.accent, draft.label)), cleanTitle(pageTitle)) });
   }
 
   return (
@@ -101,7 +101,7 @@ function ConfigPage() {
       </header>
       <section className="flex flex-col gap-2">
         <label htmlFor="page-title" className="text-xs font-bold uppercase text-muted-foreground">Page title (optional)</label>
-        <input id="page-title" value={pageTitle} onChange={(event) => setPageTitle(event.target.value.slice(0, 80))}
+        <input id="page-title" value={pageTitle} onChange={(event) => setPageTitle(event.target.value.replace(/[\p{Cc}\p{Cf}]/gu, "").slice(0, 80))}
           maxLength={80} placeholder="e.g. Buses from home" className="w-full rounded-lg border-2 border-border bg-card px-4 py-3 text-base font-bold outline-none focus:border-primary" />
         <p className="text-xs text-muted-foreground">Used as your bookmark name. Leave blank to hide it on the timings page.</p>
       </section>

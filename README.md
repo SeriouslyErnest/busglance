@@ -8,7 +8,7 @@ office. Built mobile-first so it sits comfortably on a phone home screen.
 
 The hosted app is already live. You don't have to fork or run anything to use it:
 
-👉 **<https://e-bus-flash-20290915.lovable.app>**
+👉 **<https://busflash.lovable.app>**
 
 ### Set up your own stops and bookmarks
 
@@ -27,7 +27,7 @@ The hosted app is already live. You don't have to fork or run anything to use it
 The URL carries everything, for example:
 
 ```
-https://e-bus-flash-20290915.lovable.app/?p1=14141:100:cyan:Home&title=Buses%20from%20home
+https://busflash.lovable.app/?p1=14141:100:cyan:Home&title=Buses%20from%20home
 ```
 
 Format: `?p1=<stopId>:<bus1>,<bus2>:<colour>:<encoded-name>&p2=...&title=<text>`

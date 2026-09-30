@@ -121,6 +121,11 @@ export function BusPanel({
     queryKey: ["arrivals", stopId],
     queryFn: () => fetchArrivals(stopId),
     refetchInterval: 15000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
+    staleTime: 10000,
+    retry: 2,
+    retryDelay: (n) => Math.min(30000, 2000 * 2 ** n),
   });
 
   const services = (data ?? []).filter((s) => serviceNos.includes(s.no));

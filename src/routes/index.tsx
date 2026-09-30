@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { BusPanel, type AccentKey } from "@/components/BusPanel";
-import { getPanelValues, panelSearchSchema, parsePanel } from "@/lib/panel";
+import { cleanTitle, getPanelValues, panelSearchSchema, parsePanel } from "@/lib/panel";
 
 export const Route = createFileRoute("/")({
   validateSearch: zodValidator(panelSearchSchema),
   head: ({ match }) => {
     const rawTitle = (match.search as { title?: string }).title;
-    const pageTitle = (rawTitle ?? "").trim().slice(0, 80);
+    const pageTitle = cleanTitle(typeof rawTitle === "string" ? rawTitle : "");
     const docTitle = pageTitle || "Bus Timings — SG Arrivals";
     return { meta: [
       { title: docTitle },
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const search = Route.useSearch();
-  const pageTitle = search.title.trim().slice(0, 80);
+  const pageTitle = cleanTitle(search.title);
   const panels = getPanelValues(search).map(parsePanel).filter((panel) => panel !== null);
   const defaults: AccentKey[] = ["cyan", "amber", "green", "rose", "cyan"];
 

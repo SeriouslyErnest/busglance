@@ -66,3 +66,9 @@ export function panelsToSearch(values: string[], title: string): PanelSearch {
     ["title", title],
   ]) as PanelSearch;
 }
+
+export const MAX_TITLE_LENGTH = 80;
+/** Strips control/invisible characters, collapses whitespace, caps length. */
+export function cleanTitle(value: string): string {
+  return value.replace(/[\p{Cc}\p{Cf}]/gu, "").replace(/\s+/g, " ").trim().slice(0, MAX_TITLE_LENGTH).trim();
+}
