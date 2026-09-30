@@ -10,6 +10,8 @@ The hosted app is already live. You don't have to fork or run anything to use it
 
 👉 **<https://busflash.lovable.app>**
 
+Want a quick look first? Open the demo: **<https://busflash.lovable.app/demo>**
+
 ### Set up your own stops and bookmarks
 
 1. Open the link above, then tap **Change stops & buses** at the bottom of the page.
@@ -125,6 +127,14 @@ All arrival data comes from
 [ArriveLah](https://github.com/cheeaun/arrivelah) (`https://arrivelah2.busrouter.sg/`),
 a public, unofficial aggregator of Singapore's LTA bus arrival feed. The app
 calls it read-only from the browser; no API key is required.
+
+### Security & hardening
+
+- All URL values are validated: 5-digit stop codes, 1–5 character alphanumeric bus numbers (max 12 per panel), fixed colour list.
+- Stop names (30 chars) and page title (80 chars) have control/invisible characters stripped and whitespace collapsed; everything is rendered as plain text.
+- API responses are shape-checked, capped, and time out after 10 seconds.
+- Polling pauses in background tabs, uses 15-second intervals and backs off on errors to avoid hammering the upstream service.
+- `/demo` is a simple redirect to a preset demo configuration (`src/routes/demo.tsx`).
 
 ### Limitations
 

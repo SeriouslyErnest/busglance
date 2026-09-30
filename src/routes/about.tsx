@@ -83,6 +83,8 @@ function AboutPage() {
             provider is having a hiccup — the app keeps retrying automatically.
           </li>
           <li>The app is designed for phones; add it to your home screen for quick access.</li>
+          <li>To save data and be kind to the free data source, updates pause while the app is in a background tab and resume when you return.</li>
+          <li>Want to see it in action first? Open <a className="underline" href="/demo">busflash.lovable.app/demo</a>.</li>
         </ul>
       </section>
 
