@@ -29,7 +29,9 @@ function Index() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-3 p-3 sm:p-4">
-      {pageTitle && <h1 className="px-1 pt-1 text-center text-lg font-bold leading-tight break-words sm:text-xl">{pageTitle}</h1>}
+      <h1 className="px-1 pt-1 text-center text-lg font-bold leading-tight break-words sm:text-xl">
+        {pageTitle || "Singapore Bus Arrivals"}
+      </h1>
       <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
         {panels.length === 0 && (
           <div className="w-full py-16 text-center md:col-span-2 xl:col-span-3">
