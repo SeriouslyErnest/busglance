@@ -3,7 +3,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { fetchArrivals, STOP_ID_RE } from "@/lib/bus";
-import { cleanLabel, getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
+import { getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
 import { ACCENT_KEYS, ACCENT_SWATCH, type AccentKey } from "@/components/BusPanel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -120,7 +120,7 @@ function ConfigPage() {
               <label htmlFor={`stop-${draft.id}`} className="text-xs font-bold uppercase text-muted-foreground">Bus stop code</label>
               <div className="flex gap-2">
                 <input id={`stop-${draft.id}`} value={draft.stopId} onChange={(event) => change(draft.id, {
-                  stopId: event.target.value.replace(/\D/g, "").slice(0, 5), services: null, selected: [], error: null,
+                  stopId: event.target.value.replace(/\D/g, "").slice(0, 5), services: null, selected: [], error: null, loading: false,
                 })} inputMode="numeric" maxLength={5} placeholder="e.g. 14141"
                   className="min-w-0 flex-1 rounded-lg border-2 border-border bg-card px-4 py-3 text-lg font-bold tabular-nums outline-none focus:border-primary" />
                 <Button type="button" variant="secondary" className="h-auto shrink-0 px-3" onClick={() => loadBuses(draft)} disabled={!STOP_ID_RE.test(draft.stopId) || draft.loading}>

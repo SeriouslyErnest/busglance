@@ -33,7 +33,7 @@ function AboutPage() {
           What it does
         </h2>
         <p className="text-sm leading-relaxed">
-          This app shows live arrival times for Singapore buses, side by side for two bus stops
+           This app shows live arrival times for Singapore buses, for up to five bus stops
           of your choice. It refreshes automatically every 15 seconds, so the times are always
           current. Timings come from the ArriveLah service, which uses official LTA bus data.
         </p>
@@ -63,8 +63,8 @@ function AboutPage() {
         </h2>
         <ol className="list-decimal space-y-1.5 pl-5 text-sm leading-relaxed">
           <li>Tap "Change stops &amp; buses" at the bottom of the main page.</li>
-          <li>Choose the left or right panel, then enter the 5-digit code from your bus stop sign.</li>
-          <li>Tap "Show buses", pick the buses you take, and choose a panel colour.</li>
+           <li>Add a panel and enter the 5-digit code from your bus stop sign. You can add up to five panels or remove ones you no longer need.</li>
+           <li>Tap "Show buses", pick the buses you take, choose a panel colour, and optionally give the stop a name (up to 30 characters).</li>
           <li>
             Tap <span className="font-bold">Update</span> — then bookmark the page in your
             browser. Your setup is saved in the bookmark, so you can keep different bookmarks for
@@ -86,7 +86,7 @@ function AboutPage() {
         </ul>
       </section>
 
-      <p className="text-center text-xs text-muted-foreground">Last updated: 20 September 2026</p>
+       <p className="text-center text-xs text-muted-foreground">Last updated: 30 September 2026</p>
 
       <button
         type="button"
