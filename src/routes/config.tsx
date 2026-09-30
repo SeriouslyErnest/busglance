@@ -39,7 +39,7 @@ function ConfigPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const [drafts, setDrafts] = useState<Draft[]>(() => {
-    const parsed = getPanelValues(search).map((raw, index) => {
+    const parsed = getPanelValues(search).map((raw, index): Draft | null => {
       const panel = parsePanel(raw);
       if (!panel) return null;
       return { id: index, stopId: panel.stopId, selected: panel.serviceNos, services: null,
