@@ -25,7 +25,7 @@ export type PanelSearch = z.infer<typeof panelSearchSchema>;
 export const PANEL_KEYS = ["p1", "p2", "p3", "p4", "p5"] as const;
 
 export function cleanLabel(value: string): string {
-  return value.replace(/[\p{Cc}\p{Cf}]/gu, "").replace(/\s+/g, " ").trim().slice(0, MAX_LABEL_LENGTH).trim();
+  return value.replace(/\s+/g, " ").replace(/[\p{Cc}\p{Cf}]/gu, "").trim().slice(0, MAX_LABEL_LENGTH).trim();
 }
 
 /** Format: stopId:svc1,svc2[:accent[:encoded label]]. Older links omit the label. */
@@ -70,5 +70,5 @@ export function panelsToSearch(values: string[], title: string): PanelSearch {
 export const MAX_TITLE_LENGTH = 80;
 /** Strips control/invisible characters, collapses whitespace, caps length. */
 export function cleanTitle(value: string): string {
-  return value.replace(/[\p{Cc}\p{Cf}]/gu, "").replace(/\s+/g, " ").trim().slice(0, MAX_TITLE_LENGTH).trim();
+  return value.replace(/\s+/g, " ").replace(/[\p{Cc}\p{Cf}]/gu, "").trim().slice(0, MAX_TITLE_LENGTH).trim();
 }
