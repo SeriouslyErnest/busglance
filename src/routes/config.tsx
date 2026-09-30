@@ -44,8 +44,8 @@ function ConfigPage() {
       if (!panel) return null;
       return { id: index, stopId: panel.stopId, selected: panel.serviceNos, services: null,
         accent: panel.accent ?? DEFAULT_ACCENTS[index] ?? "cyan", label: raw.split(":").length > 3 ? panel.title : "",
-        loading: false, error: null };
-    }).filter((panel) => panel !== null) as Draft[];
+        loading: false, error: null } satisfies Draft;
+    }).filter((panel): panel is Draft => panel !== null);
     return parsed.length ? parsed : [{ id: 0, stopId: "", selected: [], services: null, accent: "cyan", label: "", loading: false, error: null }];
   });
   const [nextId, setNextId] = useState(5);
