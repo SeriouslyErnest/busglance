@@ -43,9 +43,9 @@ function ConfigPage() {
       const panel = parsePanel(raw);
       if (!panel) return null;
       return { id: index, stopId: panel.stopId, selected: panel.serviceNos, services: null,
-        accent: panel.accent ?? DEFAULT_ACCENTS[index], label: raw.split(":").length > 3 ? panel.title : "",
+        accent: panel.accent ?? DEFAULT_ACCENTS[index] ?? "cyan", label: raw.split(":").length > 3 ? panel.title : "",
         loading: false, error: null };
-    }).filter((panel): panel is Draft => panel !== null);
+    }).filter((panel) => panel !== null) as Draft[];
     return parsed.length ? parsed : [{ id: 0, stopId: "", selected: [], services: null, accent: "cyan", label: "", loading: false, error: null }];
   });
   const [nextId, setNextId] = useState(5);
@@ -59,7 +59,7 @@ function ConfigPage() {
   function addPanel() {
     if (drafts.length >= MAX_PANELS) { setLimitWarning(true); return; }
     setDrafts((current) => [...current, { id: nextId, stopId: "", selected: [], services: null,
-      accent: DEFAULT_ACCENTS[current.length], label: "", loading: false, error: null }]);
+      accent: DEFAULT_ACCENTS[current.length] ?? "cyan", label: "", loading: false, error: null }]);
     setNextId((id) => id + 1);
     setLimitWarning(false);
   }

@@ -7,7 +7,7 @@ export type PanelConfig = {
   stopId: string;
   serviceNos: string[];
   title: string;
-  accent?: AccentKey;
+  accent?: AccentKey | undefined;
 };
 
 export const MAX_PANELS = 5;

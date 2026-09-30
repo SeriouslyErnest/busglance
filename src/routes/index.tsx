@@ -39,7 +39,7 @@ function Index() {
         )}
         {panels.map((config, index) => (
           <BusPanel key={`${index}-${config.stopId}-${config.serviceNos.join(",")}`} stopId={config.stopId}
-            serviceNos={config.serviceNos} title={config.title} accent={config.accent ?? defaults[index]} />
+            serviceNos={config.serviceNos} title={config.title} accent={config.accent ?? defaults[index] ?? "cyan"} />
         ))}
       </div>
       <div className="pb-4 pt-2 text-center">
