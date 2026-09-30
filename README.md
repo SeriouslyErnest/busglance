@@ -1,4 +1,4 @@
-# SG Bus Timings — Flash
+# Busflash
 
 Live Singapore bus arrival times for the stops you use every day, with
 colour-coded flashing alerts so you know exactly when to leave the house or
