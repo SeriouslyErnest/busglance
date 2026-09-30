@@ -133,7 +133,7 @@ calls it read-only from the browser; no API key is required.
 - All URL values are validated: 5-digit stop codes, 1–5 character alphanumeric bus numbers (max 12 per panel), fixed colour list.
 - Stop names (30 chars) and page title (80 chars) have control/invisible characters stripped and whitespace collapsed; everything is rendered as plain text.
 - API responses are shape-checked, capped, and time out after 10 seconds.
-- Polling pauses in background tabs, uses 15-second intervals and backs off on errors to avoid hammering the upstream service.
+- Polling pauses in background tabs, runs on one synchronized 15-second tick for all panels, shares one request per bus stop, reuses results for 5 seconds (so rapid clicks or refreshes of "Show buses" do not spam the API) and backs off on errors.
 - `/demo` is a simple redirect to a preset demo configuration (`src/routes/demo.tsx`).
 
 ### Limitations
