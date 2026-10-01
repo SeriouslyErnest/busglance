@@ -1,4 +1,4 @@
-# Busflash
+# Busglance
 
 Live Singapore bus arrival times for the stops you use every day, with
 colour-coded flashing alerts so you know exactly when to leave the house or
@@ -8,9 +8,9 @@ office. Built mobile-first so it sits comfortably on a phone home screen.
 
 The hosted app is already live. You don't have to fork or run anything to use it:
 
-👉 **<https://busflash.lovable.app>**
+👉 **<https://busglance.lovable.app>**
 
-Want a quick look first? Open the demo: **<https://busflash.lovable.app/demo>**
+Want a quick look first? Open the demo: **<https://busglance.lovable.app/demo>**
 
 ### Set up your own stops and bookmarks
 
@@ -29,7 +29,7 @@ Want a quick look first? Open the demo: **<https://busflash.lovable.app/demo>**
 The URL carries everything, for example:
 
 ```
-https://busflash.lovable.app/?p1=14141:100:cyan:Home&title=Buses%20from%20home
+https://busglance.lovable.app/?p1=14141:100:cyan:Home&title=Buses%20from%20home
 ```
 
 Format: `?p1=<stopId>:<bus1>,<bus2>:<colour>:<encoded-name>&p2=...&title=<text>`
@@ -37,7 +37,7 @@ Format: `?p1=<stopId>:<bus1>,<bus2>:<colour>:<encoded-name>&p2=...&title=<text>`
 - `p1` through `p5` are the ordered panels. Older `a` and `b` bookmarks still work.
 - The optional stop name is URL-encoded and limited to 30 characters; without it, the heading shows the bus numbers.
 - `<colour>` is one of `cyan`, `amber`, `green`, `rose`.
-- `title` is optional. When blank, the title space is hidden.
+- `title` is optional. When blank, the page shows "Busglance — Singapore Bus Arrivals".
 
 ### How to read the screen
 
