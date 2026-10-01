@@ -77,10 +77,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Bus Timings — SG Arrivals" },
+      { title: "Busglance — Singapore Bus Arrivals" },
       {
         name: "description",
-        content: "Live Singapore bus arrivals with leave-now alerts.",
+        content: "Busglance shows live Singapore bus arrivals with leave-now alerts.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

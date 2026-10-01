@@ -8,12 +8,12 @@ export const Route = createFileRoute("/")({
   head: ({ match }) => {
     const rawTitle = (match.search as { title?: string }).title;
     const pageTitle = cleanTitle(typeof rawTitle === "string" ? rawTitle : "");
-    const docTitle = pageTitle || "Bus Timings — SG Arrivals";
+    const docTitle = pageTitle || "Busglance — Singapore Bus Arrivals";
     return { meta: [
       { title: docTitle },
-      { name: "description", content: "Live Singapore bus arrivals for your regular stops, with flashing alerts when it's time to leave." },
+      { name: "description", content: "Busglance shows live Singapore bus arrivals for your regular stops, with flashing alerts when it's time to leave." },
       { property: "og:title", content: docTitle },
-      { property: "og:description", content: "Live Singapore bus arrivals for your regular stops, with flashing alerts when it's time to leave." },
+      { property: "og:description", content: "Busglance shows live Singapore bus arrivals for your regular stops, with flashing alerts when it's time to leave." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ] };
@@ -30,7 +30,7 @@ function Index() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-3 p-3 sm:p-4">
       <h1 className="px-1 pt-1 text-center text-lg font-bold leading-tight break-words sm:text-xl">
-        {pageTitle || "Singapore Bus Arrivals"}
+        {pageTitle || "Busglance — Singapore Bus Arrivals"}
       </h1>
       <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
         {panels.length === 0 && (

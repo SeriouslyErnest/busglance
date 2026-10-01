@@ -25,10 +25,10 @@ type Draft = {
 export const Route = createFileRoute("/config")({
   validateSearch: zodValidator(panelSearchSchema),
   head: () => ({ meta: [
-    { title: "Choose Your Buses — SG Bus Timings" },
-    { name: "description", content: "Choose up to five bus stops, their services, labels and colours for your live arrivals page." },
-    { property: "og:title", content: "Choose Your Buses — SG Bus Timings" },
-    { property: "og:description", content: "Choose up to five bus stops, their services, labels and colours for your live arrivals page." },
+    { title: "Choose Your Buses — Busglance" },
+    { name: "description", content: "Set up to five bus stops, services, labels and colours for your Busglance arrivals page." },
+    { property: "og:title", content: "Choose Your Buses — Busglance" },
+    { property: "og:description", content: "Set up to five bus stops, services, labels and colours for your Busglance arrivals page." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary" },
   ] }),
@@ -103,7 +103,7 @@ function ConfigPage() {
         <label htmlFor="page-title" className="text-xs font-bold uppercase text-muted-foreground">Page title (optional)</label>
         <input id="page-title" value={pageTitle} onChange={(event) => setPageTitle(event.target.value.replace(/[\p{Cc}\p{Cf}]/gu, "").slice(0, 80))}
           maxLength={80} placeholder="e.g. Buses from home" className="w-full rounded-lg border-2 border-border bg-card px-4 py-3 text-base font-bold outline-none focus:border-primary" />
-        <p className="text-xs text-muted-foreground">Used as your bookmark name. Leave blank to hide it on the timings page.</p>
+        <p className="text-xs text-muted-foreground">Used as your bookmark name. Leave blank to show the Busglance heading.</p>
       </section>
 
       {drafts.map((draft, index) => {

@@ -3,15 +3,15 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — SG Bus Timings" },
+      { title: "About — Busglance" },
       {
         name: "description",
-        content: "How to use the SG Bus Timings app: live arrivals, flashing alerts, and how to save your favourite stops.",
+        content: "How to use Busglance: live arrivals, flashing alerts, and how to save your favourite stops.",
       },
-      { property: "og:title", content: "About — SG Bus Timings" },
+      { property: "og:title", content: "About — Busglance" },
       {
         property: "og:description",
-        content: "How to use the SG Bus Timings app: live arrivals, flashing alerts, and how to save your favourite stops.",
+        content: "How to use Busglance: live arrivals, flashing alerts, and how to save your favourite stops.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -25,7 +25,7 @@ function AboutPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col gap-6 p-4 pb-10">
       <header className="pt-2 text-center">
-        <h1 className="text-2xl font-extrabold tracking-tight">About this app</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight">About Busglance</h1>
       </header>
 
       <section className="flex flex-col gap-2 rounded-3xl bg-card p-4">
@@ -84,11 +84,11 @@ function AboutPage() {
           </li>
           <li>The app is designed for phones; add it to your home screen for quick access.</li>
           <li>To save data and be kind to the free data source, updates pause while the app is in a background tab and resume when you return.</li>
-          <li>Want to see it in action first? Open <a className="underline" href="/demo">busflash.lovable.app/demo</a>.</li>
+          <li>Want to see it in action first? Open <a className="underline" href="/demo">busglance.lovable.app/demo</a>.</li>
         </ul>
       </section>
 
-       <p className="text-center text-xs text-muted-foreground">Last updated: 30 September 2026</p>
+       <p className="text-center text-xs text-muted-foreground">Last updated: 1 October 2026</p>
 
       <button
         type="button"
