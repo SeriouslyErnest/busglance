@@ -3,10 +3,11 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { fetchArrivals, STOP_ID_RE } from "@/lib/bus";
-import { cleanTitle, getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
+import { markJustUpdated, cleanTitle, getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
 import { ACCENT_KEYS, ACCENT_SWATCH, type AccentKey } from "@/components/BusPanel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { GuideDialog } from "@/components/GuideDialog";
 
 const ACCENT_LABELS: Record<AccentKey, string> = { cyan: "Blue", amber: "Orange", green: "Green", rose: "Pink" };
 const DEFAULT_ACCENTS: AccentKey[] = ["cyan", "amber", "green", "rose", "cyan"];
@@ -76,11 +77,11 @@ function ConfigPage() {
       const nos = Array.from(new Set(data.map((service) => service.no)));
       setDrafts((current) => current.map((item) => item.id !== draft.id || item.stopId !== requestedStop ? item : {
         ...item, loading: false, services: nos, selected: item.selected.filter((no) => nos.includes(no)),
-        error: nos.length ? null : "No buses found at that stop. Check the 5-digit code on the bus stop sign.",
+        error: nos.length ? null : `We couldn't find bus stop ${requestedStop}. Check the 5-digit number and try again.`,
       }));
     } catch {
       setDrafts((current) => current.map((item) => item.id !== draft.id || item.stopId !== requestedStop ? item : {
-        ...item, loading: false, error: "Couldn't reach the bus stop. Check the code and try again.",
+        ...item, loading: false, error: `We couldn't find bus stop ${requestedStop}. Check the 5-digit number and try again.`,
       }));
     }
   }
@@ -90,6 +91,7 @@ function ConfigPage() {
       setEmptyWarning(true);
       return;
     }
+    markJustUpdated();
     navigate({ to: "/", search: panelsToSearch(configured.map((draft) =>
       serializePanel(draft.stopId, draft.selected, draft.accent, draft.label)), cleanTitle(pageTitle)) });
   }
@@ -97,7 +99,8 @@ function ConfigPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col gap-5 p-4 pb-10">
       <header className="pt-2 text-center">
-        <h1 className="text-2xl font-extrabold">Choose your buses</h1>
+        <h1 className="text-2xl font-extrabold">Set up your BusGlance</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Choose the bus stops and services you want to see.</p>
       </header>
       <section className="flex flex-col gap-2">
         <label htmlFor="page-title" className="text-xs font-bold uppercase text-muted-foreground">Page title (optional)</label>
@@ -109,15 +112,15 @@ function ConfigPage() {
       {drafts.map((draft, index) => {
         const busOptions = draft.services ?? draft.selected;
         return (
-          <section key={draft.id} className="flex flex-col gap-4 border-t border-border pt-4" aria-label={`Panel ${index + 1}`}>
+          <section key={draft.id} className="flex flex-col gap-4 border-t border-border pt-4" aria-label={`Bus stop ${index + 1}`}>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-              <h2 className="min-w-0 text-lg font-extrabold">Panel {index + 1}</h2>
-              <Button type="button" variant="ghost" size="icon" onClick={() => removePanel(draft.id)} aria-label={`Remove panel ${index + 1}`} title={`Remove panel ${index + 1}`}>
+              <h2 className="min-w-0 text-lg font-extrabold">Bus stop {index + 1}</h2>
+              <Button type="button" variant="ghost" size="icon" onClick={() => removePanel(draft.id)} aria-label={`Remove bus stop ${index + 1}`} title={`Remove bus stop ${index + 1}`}>
                 <Trash2 aria-hidden="true" />
               </Button>
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor={`stop-${draft.id}`} className="text-xs font-bold uppercase text-muted-foreground">Bus stop code</label>
+              <label htmlFor={`stop-${draft.id}`} className="text-xs font-bold uppercase text-muted-foreground">Bus stop number</label>
               <div className="flex gap-2">
                 <input id={`stop-${draft.id}`} value={draft.stopId} onChange={(event) => change(draft.id, {
                   stopId: event.target.value.replace(/\D/g, "").slice(0, 5), services: null, selected: [], error: null, loading: false,
@@ -128,10 +131,12 @@ function ConfigPage() {
                 </Button>
               </div>
               {draft.error && <p role="alert" className="text-sm text-destructive">{draft.error}</p>}
+              <GuideDialog trigger={<button type="button" className="self-start text-sm text-muted-foreground">Don't know your bus stop number? <span className="font-bold text-primary underline underline-offset-4">Guide me</span></button>} />
             </div>
             {busOptions.length > 0 && (
               <div className="flex flex-col gap-2">
-                <p className="text-xs font-bold uppercase text-muted-foreground">Select buses</p>
+                <p className="text-xs font-bold uppercase text-muted-foreground">Which buses do you want to see?</p>
+                <p className="text-xs text-muted-foreground">Select only the services you want BusGlance to display.</p>
                 <div className="grid grid-cols-3 gap-2">
                   {busOptions.map((no) => <Button key={no} type="button" variant={draft.selected.includes(no) ? "default" : "outline"}
                     aria-pressed={draft.selected.includes(no)} onClick={() => change(draft.id, { selected: draft.selected.includes(no)
@@ -141,14 +146,14 @@ function ConfigPage() {
               </div>
             )}
             <div className="flex flex-col gap-2">
-              <label htmlFor={`label-${draft.id}`} className="text-xs font-bold uppercase text-muted-foreground">Bus stop name (optional)</label>
+              <label htmlFor={`label-${draft.id}`} className="text-xs font-bold uppercase text-muted-foreground">Display name (optional)</label>
               <input id={`label-${draft.id}`} value={draft.label} maxLength={MAX_LABEL_LENGTH}
                 onChange={(event) => change(draft.id, { label: event.target.value.replace(/[\p{Cc}\p{Cf}]/gu, "") })}
-                placeholder="e.g. Outside office" className="w-full rounded-lg border-2 border-border bg-card px-4 py-3 text-base outline-none focus:border-primary" />
-              <p className="text-xs text-muted-foreground">Up to {MAX_LABEL_LENGTH} characters. Leave blank to show the bus numbers instead.</p>
+                placeholder="e.g. Main Gate" className="w-full rounded-lg border-2 border-border bg-card px-4 py-3 text-base outline-none focus:border-primary" />
+              <p className="text-xs text-muted-foreground">Examples: Home, Main Gate, Opposite office. Up to {MAX_LABEL_LENGTH} characters.</p>
             </div>
             <div className="flex flex-col gap-2">
-              <p className="text-xs font-bold uppercase text-muted-foreground">Panel colour</p>
+              <p className="text-xs font-bold uppercase text-muted-foreground">Colour</p>
               <div className="grid grid-cols-4 gap-2">
                 {ACCENT_KEYS.map((key) => <Button key={key} type="button" variant="outline" aria-pressed={draft.accent === key}
                   onClick={() => change(draft.id, { accent: key })}
@@ -162,13 +167,16 @@ function ConfigPage() {
         );
       })}
       <div className="flex flex-col gap-2 border-t border-border pt-4">
-        <Button type="button" variant="outline" onClick={addPanel} className="h-11 gap-2"><Plus aria-hidden="true" /> Add panel</Button>
-        {limitWarning && <p role="alert" className="text-center text-sm text-warn">You can add up to five panels.</p>}
+        <Button type="button" variant="outline" onClick={addPanel} className="h-11 gap-2"><Plus aria-hidden="true" /> Add bus stop</Button>
+        {limitWarning && <p role="alert" className="text-center text-sm text-warn">You can add up to five bus stops.</p>}
       </div>
       <div className="mt-auto flex flex-col gap-2 pt-2">
-        {emptyWarning && <p role="alert" className="text-center text-sm text-destructive">Enter a 5-digit stop code and choose at least one bus for each panel.</p>}
-        <Button type="button" onClick={update} className="h-12 w-full rounded-full text-base font-black">Update</Button>
+        {emptyWarning && <p role="alert" className="text-center text-sm text-destructive">Enter a 5-digit stop code and choose at least one bus for each bus stop.</p>}
+        <Button type="button" onClick={update} className="h-12 w-full rounded-full text-base font-black">Update BusGlance</Button>
         <p className="text-center text-xs text-muted-foreground">Bookmark the updated page to save this setup.</p>
+        <div className="text-center text-sm text-muted-foreground">Need help setting this up?{" "}
+          <GuideDialog trigger={<button type="button" className="font-bold text-primary underline underline-offset-4">Guide me</button>} />
+        </div>
         <div className="flex items-center justify-center gap-6">
           <Link to="/" search={search} className="text-sm text-muted-foreground underline underline-offset-4">Cancel and go back</Link>
           <Link to="/about" className="text-sm text-muted-foreground underline underline-offset-4">About</Link>

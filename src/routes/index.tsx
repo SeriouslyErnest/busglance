@@ -1,4 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Star } from "lucide-react";
+import { consumeJustUpdated } from "@/lib/panel";
+import { BookmarkDialog } from "@/components/GuideDialog";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { BusPanel, type AccentKey } from "@/components/BusPanel";
 import { cleanTitle, getPanelValues, panelSearchSchema, parsePanel } from "@/lib/panel";
@@ -25,6 +29,9 @@ function Index() {
   const search = Route.useSearch();
   const pageTitle = cleanTitle(search.title);
   const panels = getPanelValues(search).map(parsePanel).filter((panel) => panel !== null);
+  const [showReady, setShowReady] = useState(false);
+  // In-memory flag only: set by Update, gone on reload, so saved links open clean.
+  useEffect(() => { if (consumeJustUpdated()) setShowReady(true); }, []);
   const defaults: AccentKey[] = ["cyan", "amber", "green", "rose", "cyan"];
 
   return (
@@ -32,6 +39,13 @@ function Index() {
       <h1 className="px-1 pt-1 text-center text-lg font-bold leading-tight break-words sm:text-xl">
         {pageTitle || "Busglance — Singapore Bus Arrivals"}
       </h1>
+      {showReady && panels.length > 0 && (
+        <div role="status" className="mx-auto flex w-full max-w-xl flex-col gap-1 rounded-lg border border-primary/50 bg-card p-3 text-sm">
+          <p className="font-extrabold">Your BusGlance is ready</p>
+          <p><strong>Bookmark this page to save this setup.</strong> Your stops and buses are stored in this page's link. No account is required.</p>
+          <button type="button" onClick={() => setShowReady(false)} className="self-end rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground">Got it</button>
+        </div>
+      )}
       <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
         {panels.length === 0 && (
           <div className="w-full py-16 text-center md:col-span-2 xl:col-span-3">
@@ -44,10 +58,11 @@ function Index() {
             serviceNos={config.serviceNos} title={config.title} accent={config.accent ?? defaults[index] ?? "cyan"} />
         ))}
       </div>
-      <div className="pb-4 pt-2 text-center">
+      <div className="flex flex-wrap items-center justify-center gap-3 pb-4 pt-2">
         <Link to="/config" search={search} className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground">
           Change stops &amp; buses
         </Link>
+        {panels.length > 0 && <BookmarkDialog trigger={<button type="button" className="inline-flex items-center gap-1.5 rounded-full border border-border px-5 py-3 text-sm font-bold"><Star className="h-4 w-4" aria-hidden="true" /> Bookmark this setup</button>} />}
       </div>
     </main>
   );

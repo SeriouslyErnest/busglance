@@ -63,8 +63,8 @@ function AboutPage() {
         </h2>
         <ol className="list-decimal space-y-1.5 pl-5 text-sm leading-relaxed">
           <li>Tap "Change stops &amp; buses" at the bottom of the main page.</li>
-           <li>Add a panel and enter the 5-digit code from your bus stop sign. You can add up to five panels or remove ones you no longer need.</li>
-           <li>Tap "Show buses", pick the buses you take, choose a panel colour, and optionally give the stop a name (up to 30 characters).</li>
+           <li>Add a bus stop and enter its 5-digit number (tap "Guide me" if you don't know it). You can add up to five bus stops or remove ones you no longer need.</li>
+           <li>Tap "Show buses", pick the buses you take, choose a colour, and optionally give the stop a display name (up to 30 characters).</li>
           <li>
             Tap <span className="font-bold">Update</span> — then bookmark the page in your
             browser. Your setup is saved in the bookmark, so you can keep different bookmarks for
