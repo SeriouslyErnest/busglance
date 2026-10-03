@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { BookmarkDialog } from "@/components/GuideDialog";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -29,7 +29,14 @@ function Index() {
   const pageTitle = cleanTitle(search.title);
   const panels = getPanelValues(search).map(parsePanel).filter((panel) => panel !== null);
   const justUpdated = useRouterState({ select: (s) => (s.location.state as { justUpdated?: boolean }).justUpdated === true });
-  const [dismissed, setDismissed] = useState(false);
+  const [showReady, setShowReady] = useState(false);
+  // Show once after Update, then clear the flag so reloads and bookmarks stay clean.
+  useEffect(() => {
+    if (!justUpdated) return;
+    setShowReady(true);
+    const { justUpdated: _drop, ...rest } = (window.history.state ?? {}) as Record<string, unknown>;
+    window.history.replaceState(rest, "");
+  }, [justUpdated]);
   const defaults: AccentKey[] = ["cyan", "amber", "green", "rose", "cyan"];
 
   return (
@@ -37,11 +44,11 @@ function Index() {
       <h1 className="px-1 pt-1 text-center text-lg font-bold leading-tight break-words sm:text-xl">
         {pageTitle || "Busglance — Singapore Bus Arrivals"}
       </h1>
-      {justUpdated && !dismissed && panels.length > 0 && (
+      {showReady && panels.length > 0 && (
         <div role="status" className="mx-auto flex w-full max-w-xl flex-col gap-1 rounded-lg border border-primary/50 bg-card p-3 text-sm">
           <p className="font-extrabold">Your BusGlance is ready</p>
           <p><strong>Bookmark this page to save this setup.</strong> Your stops and buses are stored in this page's link. No account is required.</p>
-          <button type="button" onClick={() => setDismissed(true)} className="self-end rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground">Got it</button>
+          <button type="button" onClick={() => setShowReady(false)} className="self-end rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground">Got it</button>
         </div>
       )}
       <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-2 xl:grid-cols-3">
