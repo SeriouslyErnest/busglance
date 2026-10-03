@@ -1,6 +1,7 @@
-import { createFileRoute, Link, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
+import { consumeJustUpdated } from "@/lib/panel";
 import { BookmarkDialog } from "@/components/GuideDialog";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { BusPanel, type AccentKey } from "@/components/BusPanel";
@@ -28,15 +29,9 @@ function Index() {
   const search = Route.useSearch();
   const pageTitle = cleanTitle(search.title);
   const panels = getPanelValues(search).map(parsePanel).filter((panel) => panel !== null);
-  const justUpdated = useRouterState({ select: (s) => (s.location.state as { justUpdated?: boolean }).justUpdated === true });
   const [showReady, setShowReady] = useState(false);
-  // Show once after Update, then clear the flag so reloads and bookmarks stay clean.
-  useEffect(() => {
-    if (!justUpdated) return;
-    setShowReady(true);
-    const { justUpdated: _drop, ...rest } = (window.history.state ?? {}) as Record<string, unknown>;
-    window.history.replaceState(rest, "");
-  }, [justUpdated]);
+  // In-memory flag only: set by Update, gone on reload, so saved links open clean.
+  useEffect(() => { if (consumeJustUpdated()) setShowReady(true); }, []);
   const defaults: AccentKey[] = ["cyan", "amber", "green", "rose", "cyan"];
 
   return (

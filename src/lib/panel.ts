@@ -72,3 +72,8 @@ export const MAX_TITLE_LENGTH = 80;
 export function cleanTitle(value: string): string {
   return value.replace(/\s+/g, " ").replace(/[\p{Cc}\p{Cf}]/gu, "").trim().slice(0, MAX_TITLE_LENGTH).trim();
 }
+
+let justUpdated = false;
+/** Transient, in-memory "just updated" signal for the bookmark reminder. */
+export function markJustUpdated() { justUpdated = true; }
+export function consumeJustUpdated(): boolean { const v = justUpdated; justUpdated = false; return v; }
