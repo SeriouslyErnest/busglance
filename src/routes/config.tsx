@@ -97,7 +97,8 @@ function ConfigPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-xl flex-col gap-5 p-4 pb-10">
       <header className="pt-2 text-center">
-        <h1 className="text-2xl font-extrabold">Choose your buses</h1>
+        <h1 className="text-2xl font-extrabold">Set up your BusGlance</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Choose the bus stops and services you want to see.</p>
       </header>
       <section className="flex flex-col gap-2">
         <label htmlFor="page-title" className="text-xs font-bold uppercase text-muted-foreground">Page title (optional)</label>
