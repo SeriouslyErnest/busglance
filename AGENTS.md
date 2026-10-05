@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Store panel configuration in ordered `p1`–`p5` URL parameters with optional encoded labels, while reading legacy `a`/`b` parameters, because bookmarks must remain portable and old links must keep working.
+- Per-stop alert timers are optional 5th/6th panel parts, omitted when default, because links must stay short and old bookmarks valid.

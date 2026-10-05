@@ -1,9 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { fetchArrivals, STOP_ID_RE } from "@/lib/bus";
-import { markJustUpdated, cleanTitle, getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
+import { DEFAULT_URGENT, DEFAULT_WARN, MAX_ALERT_MINUTES, validTimers, markJustUpdated, cleanTitle, getPanelValues, MAX_LABEL_LENGTH, MAX_PANELS, panelSearchSchema, panelsToSearch, parsePanel, serializePanel } from "@/lib/panel";
 import { ACCENT_KEYS, ACCENT_SWATCH, type AccentKey } from "@/components/BusPanel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,9 @@ type Draft = {
   services: string[] | null;
   accent: AccentKey;
   label: string;
+  warn: number;
+  urgent: number;
+  adjusting: boolean;
   loading: boolean;
   error: string | null;
 };
@@ -44,10 +47,10 @@ function ConfigPage() {
       const panel = parsePanel(raw);
       if (!panel) return null;
       return { id: index, stopId: panel.stopId, selected: panel.serviceNos, services: null,
-        accent: panel.accent ?? DEFAULT_ACCENTS[index] ?? "cyan", label: raw.split(":").length > 3 ? panel.title : "",
+        accent: panel.accent ?? DEFAULT_ACCENTS[index] ?? "cyan", label: panel.label, warn: panel.warn, urgent: panel.urgent, adjusting: false,
         loading: false, error: null } satisfies Draft;
     }).filter((panel): panel is Draft => panel !== null);
-    return parsed.length ? parsed : [{ id: 0, stopId: "", selected: [], services: null, accent: "cyan", label: "", loading: false, error: null }];
+    return parsed.length ? parsed : [{ id: 0, stopId: "", selected: [], services: null, accent: "cyan", label: "", warn: DEFAULT_WARN, urgent: DEFAULT_URGENT, adjusting: false, loading: false, error: null }];
   });
   const [nextId, setNextId] = useState(5);
   const [limitWarning, setLimitWarning] = useState(false);
@@ -60,7 +63,7 @@ function ConfigPage() {
   function addPanel() {
     if (drafts.length >= MAX_PANELS) { setLimitWarning(true); return; }
     setDrafts((current) => [...current, { id: nextId, stopId: "", selected: [], services: null,
-      accent: DEFAULT_ACCENTS[current.length] ?? "cyan", label: "", loading: false, error: null }]);
+      accent: DEFAULT_ACCENTS[current.length] ?? "cyan", label: "", warn: DEFAULT_WARN, urgent: DEFAULT_URGENT, adjusting: false, loading: false, error: null }]);
     setNextId((id) => id + 1);
     setLimitWarning(false);
   }
@@ -91,9 +94,10 @@ function ConfigPage() {
       setEmptyWarning(true);
       return;
     }
+    if (configured.some((draft) => !validTimers(draft.warn, draft.urgent))) { setEmptyWarning(false); return; }
     markJustUpdated();
     navigate({ to: "/", search: panelsToSearch(configured.map((draft) =>
-      serializePanel(draft.stopId, draft.selected, draft.accent, draft.label)), cleanTitle(pageTitle)) });
+      serializePanel(draft.stopId, draft.selected, draft.accent, draft.label, draft.warn, draft.urgent)), cleanTitle(pageTitle)) });
   }
 
   return (
@@ -163,6 +167,7 @@ function ConfigPage() {
                 </Button>)}
               </div>
             </div>
+            <AlertTiming draft={draft} onChange={(changes) => change(draft.id, changes)} />
           </section>
         );
       })}
@@ -183,5 +188,47 @@ function ConfigPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+function Stepper({ label, value, onChange, id }: { label: string; value: number; onChange: (v: number) => void; id: string }) {
+  const set = (v: number) => onChange(Math.max(0, Math.min(MAX_ALERT_MINUTES, Number.isFinite(v) ? Math.round(v) : 0)));
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={id} className="text-xs font-bold text-muted-foreground">{label}</label>
+      <div className="flex items-center gap-2">
+        <Button type="button" variant="outline" size="icon" className="h-11 w-11" onClick={() => set(value - 1)} aria-label={`Decrease ${label}`}><Minus aria-hidden="true" /></Button>
+        <input id={id} inputMode="numeric" value={value} onChange={(e) => set(Number(e.target.value.replace(/\D/g, "").slice(0, 2) || 0))}
+          className="h-11 w-14 rounded-lg border-2 border-border bg-card text-center text-lg font-bold tabular-nums outline-none focus:border-primary" />
+        <span className="text-sm text-muted-foreground">min</span>
+        <Button type="button" variant="outline" size="icon" className="h-11 w-11" onClick={() => set(value + 1)} aria-label={`Increase ${label}`}><Plus aria-hidden="true" /></Button>
+      </div>
+    </div>
+  );
+}
+
+function AlertTiming({ draft, onChange }: { draft: Draft; onChange: (c: Partial<Draft>) => void }) {
+  const isDefault = draft.warn === DEFAULT_WARN && draft.urgent === DEFAULT_URGENT;
+  const valid = validTimers(draft.warn, draft.urgent);
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-xs font-bold uppercase text-muted-foreground">Alert timing</p>
+      {!draft.adjusting ? (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm">Warning <strong>{draft.warn} min</strong> · Urgent <strong>{draft.urgent} min</strong></p>
+          <Button type="button" variant="outline" size="sm" onClick={() => onChange({ adjusting: true })}>Adjust</Button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-6">
+            <Stepper id={`warn-${draft.id}`} label="Warning" value={draft.warn} onChange={(warn) => onChange({ warn })} />
+            <Stepper id={`urgent-${draft.id}`} label="Urgent / time to go" value={draft.urgent} onChange={(urgent) => onChange({ urgent })} />
+          </div>
+          {!valid && <p role="alert" className="text-sm text-destructive">Warning should be later than Urgent.</p>}
+          {!isDefault && <Button type="button" variant="ghost" size="sm" className="self-start" onClick={() => onChange({ warn: DEFAULT_WARN, urgent: DEFAULT_URGENT })}>Reset to {DEFAULT_WARN} / {DEFAULT_URGENT}</Button>}
+        </div>
+      )}
+      <p className="text-xs text-muted-foreground">Adjust this if you need more or less time to reach this stop. Warning controls the yellow flash; Urgent controls the red flash.</p>
+    </div>
   );
 }

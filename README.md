@@ -32,7 +32,9 @@ The URL carries everything, for example:
 https://busglance.lovable.app/?p1=14141:100:cyan:Home&title=Buses%20from%20home
 ```
 
-Format: `?p1=<stopId>:<bus1>,<bus2>:<colour>:<encoded-name>&p2=...&title=<text>`
+Format: `?p1=<stopId>:<bus1>,<bus2>:<colour>:<encoded-name>[:<warning>:<urgent>]&p2=...&title=<text>`
+
+The optional `:<warning>:<urgent>` minutes (whole numbers 0–60, warning > urgent) set per-stop flash timing, e.g. `p1=14141:100:cyan:Home:8:5`. They are only added when different from the default 5 / 3; missing or invalid values fall back to 5 / 3.
 
 - `p1` through `p5` are the ordered panels. Older `a` and `b` bookmarks still work.
 - The optional stop name is URL-encoded and limited to 30 characters; without it, the heading shows the bus numbers.
@@ -42,8 +44,10 @@ Format: `?p1=<stopId>:<bus1>,<bus2>:<colour>:<encoded-name>&p2=...&title=<text>`
 ### How to read the screen
 
 - Each bus shows its next three arrivals, in minutes.
-- **Yellow flashing** — under 5 minutes away. Start heading out.
-- **Red flashing** — under 3 minutes. Go now.
+- **Yellow flashing** — under the stop's Warning time (default 5 minutes). Start heading out.
+- **Red flashing** — under the stop's Urgent time (default 3 minutes). Go now.
+- Each stop's timing can be changed under **Alert timing → Adjust** on the setup page.
+- A small one-time "Latest update" note may appear at the bottom of the main page; dismissing it is remembered on that browser (only the newest note is ever shown).
 - **Arr** — the bus is at the stop right now.
 - Times refresh automatically every 15 seconds from the
   [ArriveLah](https://arrivelah2.busrouter.sg/) service, which uses official LTA
@@ -78,7 +82,7 @@ working configuration.
 - **Live fetching.** `src/lib/bus.ts` validates the stop ID, URL-encodes it,
   adds a 10-second timeout, and validates the shape of the ArriveLah response.
 - **Flashing alerts.** `src/components/BusPanel.tsx` renders arrivals and
-  applies yellow (under 5 min) / red (under 3 min) flashing styles.
+  applies yellow / red flashing using each stop's warning / urgent minutes (default 5 / 3).
 - **Config UI.** `src/routes/config.tsx` lets non-technical users pick stops,
   load the services available at a stop, choose buses and colours, and return to
   the main page with the updated URL.
