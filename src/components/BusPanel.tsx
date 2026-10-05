@@ -12,7 +12,7 @@ function useNow() {
   return now;
 }
 
-function ArrivalCell({ isoTime, primary }: { isoTime: string | undefined; primary?: boolean }) {
+function ArrivalCell({ isoTime, primary, warn, urgent }: { isoTime: string | undefined; primary?: boolean; warn: number; urgent: number }) {
   useNow();
   const mins = minutesUntil(isoTime);
 
@@ -25,7 +25,7 @@ function ArrivalCell({ isoTime, primary }: { isoTime: string | undefined; primar
     );
   }
 
-  const state = mins < 3 ? "urgent" : mins < 5 ? "warn" : "ok";
+  const state = mins < urgent ? "urgent" : mins < warn ? "warn" : "ok";
   const label = mins === 0 ? "Arr" : `${mins}`;
 
   return (
@@ -48,7 +48,7 @@ function ArrivalCell({ isoTime, primary }: { isoTime: string | undefined; primar
   );
 }
 
-function ServiceRow({ service }: { service: BusService }) {
+function ServiceRow({ service, warn, urgent }: { service: BusService; warn: number; urgent: number }) {
   const arrivals = [service.next?.time, service.next2?.time, service.next3?.time];
   return (
     <div className="flex items-stretch gap-2">
@@ -57,7 +57,7 @@ function ServiceRow({ service }: { service: BusService }) {
       </div>
       <div className="grid min-w-0 flex-1 grid-cols-3 gap-2">
         {arrivals.map((t, i) => (
-          <ArrivalCell key={i} isoTime={t} primary={i === 0} />
+          <ArrivalCell key={i} isoTime={t} primary={i === 0} warn={warn} urgent={urgent} />
         ))}
       </div>
     </div>
@@ -111,11 +111,15 @@ export function BusPanel({
   serviceNos,
   title,
   accent = "cyan",
+  warn = 5,
+  urgent = 3,
 }: {
   stopId: string;
   serviceNos: string[];
   title: string;
   accent?: AccentKey;
+  warn?: number;
+  urgent?: number;
 }) {
   const { data, isLoading, isError, dataUpdatedAt } = useQuery({
     queryKey: ["arrivals", stopId],
@@ -165,7 +169,7 @@ export function BusPanel({
 
       <div className="flex flex-col gap-3">
         {services.map((s) => (
-          <ServiceRow key={s.no} service={s} />
+          <ServiceRow key={s.no} service={s} warn={warn} urgent={urgent} />
         ))}
       </div>
 
@@ -176,7 +180,7 @@ export function BusPanel({
       )}
 
       <p className="mt-auto text-[10px] text-muted-foreground">
-        Yellow flash: under 5 min · Red flash: under 3 min — time to go!
+        Warning (yellow) &lt;{warn}m · Urgent (red) &lt;{urgent}m
       </p>
     </section>
   );

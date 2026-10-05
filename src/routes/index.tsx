@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { consumeJustUpdated } from "@/lib/panel";
 import { BookmarkDialog } from "@/components/GuideDialog";
+import { AnnouncementCard } from "@/components/AnnouncementCard";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { BusPanel, type AccentKey } from "@/components/BusPanel";
 import { cleanTitle, getPanelValues, panelSearchSchema, parsePanel } from "@/lib/panel";
@@ -55,9 +56,11 @@ function Index() {
         )}
         {panels.map((config, index) => (
           <BusPanel key={`${index}-${config.stopId}-${config.serviceNos.join(",")}`} stopId={config.stopId}
-            serviceNos={config.serviceNos} title={config.title} accent={config.accent ?? defaults[index] ?? "cyan"} />
+            serviceNos={config.serviceNos} title={config.title} accent={config.accent ?? defaults[index] ?? "cyan"}
+            warn={config.warn} urgent={config.urgent} />
         ))}
       </div>
+      <AnnouncementCard />
       <div className="flex flex-wrap items-center justify-center gap-3 pb-4 pt-2">
         <Link to="/config" search={search} className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground">
           Change stops &amp; buses

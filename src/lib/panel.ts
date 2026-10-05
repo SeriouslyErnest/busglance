@@ -8,7 +8,24 @@ export type PanelConfig = {
   serviceNos: string[];
   title: string;
   accent?: AccentKey | undefined;
+  label: string;
+  warn: number;
+  urgent: number;
 };
+
+export const DEFAULT_WARN = 5;
+export const DEFAULT_URGENT = 3;
+export const MAX_ALERT_MINUTES = 60;
+export function validTimers(warn: number, urgent: number): boolean {
+  return Number.isInteger(warn) && Number.isInteger(urgent) && urgent >= 0 && warn <= MAX_ALERT_MINUTES && warn > urgent;
+}
+function parseTimers(w?: string, u?: string): { warn: number; urgent: number } {
+  if (w !== undefined && u !== undefined && /^\d{1,2}$/.test(w) && /^\d{1,2}$/.test(u)) {
+    const warn = Number(w), urgent = Number(u);
+    if (validTimers(warn, urgent)) return { warn, urgent };
+  }
+  return { warn: DEFAULT_WARN, urgent: DEFAULT_URGENT };
+}
 
 export const MAX_PANELS = 5;
 export const MAX_LABEL_LENGTH = 30;
@@ -28,28 +45,34 @@ export function cleanLabel(value: string): string {
   return value.replace(/\s+/g, " ").replace(/[\p{Cc}\p{Cf}]/gu, "").trim().slice(0, MAX_LABEL_LENGTH).trim();
 }
 
-/** Format: stopId:svc1,svc2[:accent[:encoded label]]. Older links omit the label. */
+/** Format: stopId:svc1,svc2[:accent[:encoded label[:warn:urgent]]]. Labels are URL-encoded so never contain raw ':'. */
 export function parsePanel(raw: string): PanelConfig | null {
   if (typeof raw !== "string" || raw.length > 240) return null;
-  const [stopId, services, accent, ...labelParts] = raw.split(":");
+  const [stopId, services, accent, rawLabel, w, u] = raw.split(":");
   if (!stopId || !STOP_ID_RE.test(stopId)) return null;
   const serviceNos = Array.from(new Set((services ?? "").split(",")
     .map((s) => s.trim().toUpperCase()).filter((s) => SERVICE_RE.test(s)))).slice(0, MAX_SERVICES);
   if (serviceNos.length === 0) return null;
   let label = "";
-  if (labelParts.length) {
-    try { label = cleanLabel(decodeURIComponent(labelParts.join(":"))); } catch { return null; }
+  if (rawLabel) {
+    try { label = cleanLabel(decodeURIComponent(rawLabel)); } catch { return null; }
   }
+  const { warn, urgent } = parseTimers(w, u);
   return {
     stopId, serviceNos,
     title: label || (serviceNos.length === 1 ? `Bus ${serviceNos[0]}` : `Bus ${serviceNos.join(" & ")}`),
     accent: ACCENT_KEYS.includes(accent as AccentKey) ? (accent as AccentKey) : undefined,
+    label, warn, urgent,
   };
 }
 
-export function serializePanel(stopId: string, serviceNos: string[], accent: AccentKey, label = ""): string {
+export function serializePanel(stopId: string, serviceNos: string[], accent: AccentKey, label = "",
+  warn = DEFAULT_WARN, urgent = DEFAULT_URGENT): string {
   const safeLabel = cleanLabel(label);
-  return `${stopId}:${serviceNos.join(",")}:${accent}${safeLabel ? `:${encodeURIComponent(safeLabel)}` : ""}`;
+  const custom = validTimers(warn, urgent) && (warn !== DEFAULT_WARN || urgent !== DEFAULT_URGENT);
+  const base = `${stopId}:${serviceNos.join(",")}:${accent}`;
+  if (custom) return `${base}:${encodeURIComponent(safeLabel)}:${warn}:${urgent}`;
+  return `${base}${safeLabel ? `:${encodeURIComponent(safeLabel)}` : ""}`;
 }
 
 /** New-format links take precedence; legacy a/b links remain readable. */
