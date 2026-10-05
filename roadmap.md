@@ -1,6 +1,6 @@
 - [x] Add up to five URL-backed panels with legacy bookmark compatibility.
 - [x] Add validated custom stop labels and editable add/remove panel flow.
 - [x] Compact the page title and stop panels; update help and verify flows.
-- [ ] Per-stop custom alert timers (warning/urgent) in URL + config + panel legend.
-- [ ] One-time dismissible "latest update" card on main page.
-- [ ] Test, then update About guide and README.
+- [x] Per-stop custom alert timers (warning/urgent) in URL + config + panel legend.
+- [x] One-time dismissible "latest update" card on main page.
+- [x] Test, then update About guide and README.

@@ -47,12 +47,13 @@ function AboutPage() {
           <li>Each bus shows its next three arrivals in minutes.</li>
           <li>
             <span className="font-bold text-amber-300">Yellow flashing</span> means the bus is
-            under 5 minutes away — start heading out.
+            under the stop's Warning time (5 minutes by default) — start heading out.
           </li>
           <li>
-            <span className="font-bold text-red-400">Red flashing</span> means under 3 minutes —
+            <span className="font-bold text-red-400">Red flashing</span> means under the stop's Urgent time (3 minutes by default) —
             go now!
           </li>
+          <li>Each stop can have its own timing. On the setup page, tap <strong>Adjust</strong> under "Alert timing" for that stop — e.g. Warning 8 / Urgent 5 for a stop that's further away. The arrival minutes shown never change; only when the flashing starts.</li>
           <li>"Arr" means the bus is arriving at the stop right now.</li>
         </ul>
       </section>
@@ -88,7 +89,7 @@ function AboutPage() {
         </ul>
       </section>
 
-       <p className="text-center text-xs text-muted-foreground">Last updated: 1 October 2026</p>
+       <p className="text-center text-xs text-muted-foreground">Last updated: 5 October 2026</p>
 
       <button
         type="button"
