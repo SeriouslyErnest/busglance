@@ -61,6 +61,8 @@ See the in-app **About** page (`/about`) for the same guidance in-app.
 
 ## For developers
 
+See [CHANGELOG.md](./CHANGELOG.md) for the history of features and changes.
+
 The rest of this document is for people who want to fork the project, run it
 locally, or understand how it's built.
 
