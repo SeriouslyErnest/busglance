@@ -182,9 +182,10 @@ function ConfigPage() {
         <div className="text-center text-sm text-muted-foreground">Need help setting this up?{" "}
           <GuideDialog trigger={<button type="button" className="font-bold text-primary underline underline-offset-4">Guide me</button>} />
         </div>
-        <div className="flex items-center justify-center gap-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <Link to="/" search={search} className="text-sm text-muted-foreground underline underline-offset-4">Cancel and go back</Link>
           <Link to="/about" className="text-sm text-muted-foreground underline underline-offset-4">About</Link>
+          <a href="https://seriouslyernest.github.io/#feedback" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground underline underline-offset-4">Feedback &amp; Support</a>
         </div>
       </div>
     </main>
